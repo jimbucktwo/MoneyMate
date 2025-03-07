@@ -14,7 +14,6 @@ export default function Home() {
               <th>Amount</th>
             </tr>
           </thead>
-          <p>asdjnasidnasjndsanjdsa</p>
           <tbody>
             <tr>
               <td>Food</td>
