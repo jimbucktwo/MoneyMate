@@ -1,4 +1,5 @@
 import Header from "../components/header";
+import Footer from "../components/footer";
 
 export default function Account() {
   return (
@@ -6,6 +7,7 @@ export default function Account() {
       <div className="flex flex-col items-center space-y-4 size-full">
         <Header/>
         <h1 className="text-4xl font-bold text-center">Account Page</h1>
+        <Footer />
       </div>
     </main>
   );
