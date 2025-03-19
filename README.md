@@ -56,7 +56,7 @@ npm run build
 2. Updating dependencies : `pip freeze > requirements.txt`
 
 ### Run/Test :
-1. Run FastAPI backend server : `fastapi dev app/main.py` MacOS `uvicorn app.main:app --reload` Windows
+1. Run FastAPI backend server : `fastapi dev main.py` MacOS `uvicorn app.main:app --reload` Windows
 
 2. Default server location : http://127.0.0.1:8000
 

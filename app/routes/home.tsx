@@ -4,12 +4,12 @@ import { Welcome } from "../welcome/welcome";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Personal Budget Manager" },
-    { name: "description", content: "Welcome to Money Mate!" },
+    { name: "Yep Yep", content: "Welcome to Money Mate!" },
   ];
 }
 
 export function loader({ context }: Route.LoaderArgs) {
-  return { message: "Hello from MoneyMate" };
+  return { message: "Welcome!" };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

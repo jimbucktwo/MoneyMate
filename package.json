@@ -9,6 +9,8 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.24.2",
+    "@clerk/react-router": "^1.1.5",
     "@react-router/node": "^7.1.5",
     "isbot": "^5.1.17",
     "react": "^19.0.0",
