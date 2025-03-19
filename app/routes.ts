@@ -4,8 +4,7 @@ export default [
     index("routes/home.tsx"),
     route("account", "routes/account.tsx"),
     route("budget", "routes/budget.tsx"),
-    layout("./auth/layout.tsx", [
-        route("login", "./auth/login.tsx"),
-        route("register", "./auth/register.tsx")
-    ])
+    route("login/*", "routes/login.tsx"),
+    route("register/*", "routes/register.tsx")
+        
 ] satisfies RouteConfig;

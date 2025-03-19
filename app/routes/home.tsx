@@ -1,5 +1,8 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
+import {getAuth} from '@clerk/react-router/ssr.server';
+import { createClerkClient } from "@clerk/react-router/api.server";
+import { redirect } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,10 +11,21 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function loader({ context }: Route.LoaderArgs) {
-  return { message: "Welcome!" };
+export async function loader( context : Route.LoaderArgs) {
+  const {userId} = await getAuth(context);
+  if (!userId) {
+    return redirect('/login');
+  }
+
+   const user = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }).users.getUser(
+    userId,
+  )
+
+  return {
+    user: JSON.stringify(user),
+  }
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  return <Welcome message={loaderData.message} />;
+  return <Welcome message={loaderData.user} />;
 }
