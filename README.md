@@ -42,6 +42,8 @@ npm run build
 
 ## Running Backend
 ### Virtual Environment : 
+0. Navigate to the backend folder
+
 1. [Python Docs](https://docs.python.org/3/library/venv.html)
 
 2. Create a new environment : `python -m venv .venv`
@@ -56,7 +58,9 @@ npm run build
 2. Updating dependencies : `pip freeze > requirements.txt`
 
 ### Run/Test :
-1. Run FastAPI backend server : `fastapi dev main.py` MacOS `uvicorn app.main:app --reload` Windows
+0. Navigate to your backend folder
+
+1. Run FastAPI backend server : `fastapi dev app/main.py` MacOS `uvicorn app.main:app --reload` Windows
 
 2. Default server location : http://127.0.0.1:8000
 

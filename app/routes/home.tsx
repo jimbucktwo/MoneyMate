@@ -3,6 +3,7 @@ import { Welcome } from "../welcome/welcome";
 import {getAuth} from '@clerk/react-router/ssr.server';
 import { createClerkClient } from "@clerk/react-router/api.server";
 import { redirect } from "react-router";
+import {useUser} from "@clerk/clerk-react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -27,5 +28,6 @@ export async function loader( context : Route.LoaderArgs) {
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  return <Welcome message={loaderData.user} />;
+  const { isSignedIn, user, isLoaded } = useUser();
+  return <Welcome user={loaderData.user}/>;
 }

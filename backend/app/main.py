@@ -1,8 +1,12 @@
 from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+import app.routers.users as users
+
 
 app = FastAPI()
+
+app.include_router(users.router)
 
 app.add_middleware(
     CORSMiddleware,

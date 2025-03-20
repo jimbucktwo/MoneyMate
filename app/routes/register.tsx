@@ -8,7 +8,7 @@ export default function Register() {
       <div className="flex flex-col items-center space-y-4 size-full">
         <Header/>
         <div className="flex items-center justify-center size-full">
-          <SignUp/>
+          <SignUp signInUrl={"/login"}/>
           </div>
           <Footer/>
         </div>
