@@ -53,7 +53,7 @@ npm run build
 4. De-activate environment  : `deactivate`
 
 ### Dependencies :
-1. Install dependencies : `pip install -r requirements.txt` MacOS `npm install "fastapi[standard]"` Windows
+1. Install dependencies : `pip install -r requirements.txt` MacOS
 
 2. Updating dependencies : `pip freeze > requirements.txt`
 

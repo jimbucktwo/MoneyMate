@@ -6,7 +6,7 @@ import {useUser} from "@clerk/clerk-react";
 
 export async function Welcome({user} : {user: string}) {
   const userInfo = JSON.parse(user);
-  
+  console.log(userInfo)
   return (
     <main className="flex items-center justify-center pb-4 size-full ">
       <div className="flex flex-col items-center space-y-4 size-full">

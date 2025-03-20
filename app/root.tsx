@@ -49,7 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App({ loaderData }: Route.ComponentProps) {
   const publishableKey = process.env.VITE_CLERK_PUBLISHABLE_KEY
   if (!publishableKey) {
-    throw new Error('Add EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY to your .env file')
+    throw new Error('Add VITE_PUBLIC_CLERK_PUBLISHABLE_KEY to your .env file')
   }
   return (
     <ClerkProvider

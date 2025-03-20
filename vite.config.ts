@@ -10,6 +10,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     define: {
       'process.env.VITE_CLERK_PUBLISHABLE_KEY' : JSON.stringify(env.VITE_CLERK_PUBLISHABLE_KEY),
+      'process.env.VITE_PUBLIC_BACKEND_URL' : JSON.stringify(env.VITE_PUBLIC_BACKEND_URL),
     },
     plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
     ssr: {
