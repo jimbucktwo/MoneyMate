@@ -5,6 +5,6 @@ from bson import ObjectId
 class User(BaseModel):
     id: str
     username: str
-    firstname: str
-    lastname: str
+    firstName: str
+    lastName: str
     email: str
