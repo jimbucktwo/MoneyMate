@@ -10,6 +10,17 @@ print(userCollection)
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+@router.get("/get_user/{user_id}")
+def get_user_by_id(user_id: str):
+    try:
+        result = userCollection.find_one({"_id": user_id})
+        if result:
+            return result
+        else:
+            raise HTTPException(status_code=404, detail="Item not found")
+    except PyMongoError as e:
+        raise HTTPException(status_code=500, detail="Database query failed")
+
 @router.post("/create_user", response_model=str, status_code=201)
 def create_new_user(user: User):
     try:
