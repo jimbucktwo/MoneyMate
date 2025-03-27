@@ -15,7 +15,7 @@ export function meta({}: Route.MetaArgs) {
 export async function loader( context : Route.LoaderArgs) {
   const {userId} = await getAuth(context);
   if (!userId) {
-    return redirect('/login');
+    return redirect('/landing');
   }
 
    const user = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }).users.getUser(
@@ -47,6 +47,5 @@ export async function loader( context : Route.LoaderArgs) {
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { isSignedIn, user, isLoaded } = useUser();
   return <Welcome user={loaderData.user}/>;
 }
