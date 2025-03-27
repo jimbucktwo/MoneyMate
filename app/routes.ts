@@ -4,6 +4,7 @@ export default [
     index("routes/home.tsx"),
     route("account", "routes/account.tsx"),
     route("budget", "routes/budget.tsx"),
+    route("landing/*", "routes/landing.tsx"),
     route("login/*", "routes/login.tsx"),
     route("register/*", "routes/register.tsx")
         
