@@ -15,7 +15,7 @@ export async function loader(context: Route.LoaderArgs) {
   
   try {
     // Fetch assigned routines
-    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`, {
+    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}users/get_user/${userId}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -45,7 +45,7 @@ export default function Account({
   loaderData,
 }: Route.ComponentProps) {
   const { isSignedIn, user, isLoaded} = useUser();
-  const[budgets, setBudgets] = useState(loaderData.budgets);
+  const[budgets, setBudgets] = useState(loaderData? loaderData.budgets : []);
   console.log(loaderData);
 
   if (!isSignedIn) {
