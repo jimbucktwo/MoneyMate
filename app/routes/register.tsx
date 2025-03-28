@@ -101,7 +101,7 @@ const validateInputs = () => {
 }
 
     return (
-        <main className="flex items-center justify-center size-full h-screen">
+        <main className="flex items-center justify-center size-full min-h-screen">
       <div className="flex flex-col items-center space-y-4 size-full">
         <Header/>
         <div className="flex items-center justify-center size-full">
@@ -163,7 +163,7 @@ const validateInputs = () => {
         <p className="text-center text-sm text-gray-600 mt-4">
             Already have an account? <a href="/login" className="text-blue-500">Log in</a>
         </p>
-    </div>
+        </div>
           </div>
           <Footer/>
         </div>

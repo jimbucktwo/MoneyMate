@@ -9,10 +9,10 @@ export default async function Landing() {
   return (
     <main className="flex items-center justify-center size-full ">
       <div className="bg-[url('app/images/landing.jpeg')] justify-center bg-cover bg-center flex flex-col items-center size-full h-screen">
-          <div className="flex flex-col items-end justify-center w-8xl">
+          <div className="backdrop-blur-md flex flex-col items-end justify-center w-5/6 rounded-xl p-8">
           <h1 className="flex text-6xl font-bold text-center">Welcome to MoneyMate!</h1>
           
-          <p className="flex text-4xl font-semibold text-center p-4">MoneyMate is a personal finance management tool that helps you track your spending and saving habits.</p>
+          <p className="flex text-4xl font-semibold text-end p-4">MoneyMate is a personal finance management tool that helps you track your spending and saving habits.</p>
           
         <button className=" bg-white p-4 hover:text-white hover:bg-gray-200 px-20 py-4 rounded-full transition duration-200"><a className="text-xl"href="/register">Get Started</a></button>
       </div>
