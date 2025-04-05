@@ -48,7 +48,7 @@ def update_user_by_id(user_id: str, budget: Budget):
             budget_dict = budget.model_dump(by_alias=True)
             updated_item = userCollection.update_one(
                 {"_id": user_id},
-                {"$addToSet": {"budgets": {"_id": budget_dict["_id"], "category": budget_dict["category"], "amount": budget_dict["amount"], "limit": budget_dict["limit"]}}}
+                {"$addToSet": {"budgets": {"id": budget_dict["id"], "category": budget_dict["category"], "amount": budget_dict["amount"], "limit": budget_dict["limit"]}}}
             )
             if updated_item.modified_count == 1:
                 return {"message": "Item updated successfully!"}
@@ -59,3 +59,4 @@ def update_user_by_id(user_id: str, budget: Budget):
             raise HTTPException(status_code=404, detail="Item not found")
     except PyMongoError as e:
         raise HTTPException(status_code=500, detail="Database update failed")
+    
