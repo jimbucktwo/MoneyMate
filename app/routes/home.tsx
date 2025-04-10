@@ -21,9 +21,11 @@ export async function loader( context : Route.LoaderArgs) {
    const user = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }).users.getUser(
     userId,
   )
+  
+  
   let data = user;
   try {
-    // Fetch assigned routines
+    // Fetch assigned budgets
     const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${user.id}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
@@ -31,7 +33,7 @@ export async function loader( context : Route.LoaderArgs) {
         
     // Throw an error if the response is not successful
     if (!response.ok) {
-      throw new Error(`Failed to fetch assigned routines. Status: ${response.status}`);
+      throw new Error(`Failed to fetch assigned budgets. Status: ${response.status}`);
     }
 
     // Parse the response as JSON
@@ -39,7 +41,7 @@ export async function loader( context : Route.LoaderArgs) {
     console.log("Fetched data:", data);
 
   } catch (err) {
-    console.error("Error fetching assigned routines:", err);
+    console.error("Error fetching assigned budgets:", err);
   };
   return {
     user: JSON.stringify(data),

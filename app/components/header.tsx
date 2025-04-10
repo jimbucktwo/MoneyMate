@@ -13,7 +13,7 @@ export default function Header() {
               <a className=" mx-5 hover:text-white hover:bg-gray-200 px-4 py-2 rounded-full transition duration-200" href="/account">Account</a>
             </li>
             <li>
-              <a className=" mx-5 hover:text-white hover:bg-gray-200 px-4 py-2 rounded-full transition duration-200" href="/budget">New Budget</a>
+              <a className=" mx-5 hover:text-white hover:bg-gray-200 px-4 py-2 rounded-full transition duration-200" href="/budget">Budgets</a>
             </li>
             <li>
               <SignedIn>

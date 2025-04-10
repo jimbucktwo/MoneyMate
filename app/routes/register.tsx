@@ -2,10 +2,21 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import {SignUp, useSignUp} from "@clerk/clerk-react";
 import {useState, useEffect} from "react";
-import { redirect } from "react-router";
+import { useNavigate, redirect } from "react-router";
+import { getAuth } from "@clerk/react-router/ssr.server";
+import type { Route } from "./+types/register";
 
-export default function Register() {
+export async function loader(context: Route.LoaderArgs) {
+    const {userId} = await getAuth(context);
+    if (userId) {
+      return redirect('/');
+    }
+    return userId;
+  }
+
+export default function Register({loaderData}: Route.ComponentProps) {
   const { isLoaded, signUp, setActive } = useSignUp();
+  let navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState(''); 
   const [lastName, setLastName] = useState('');
@@ -76,7 +87,7 @@ const validateInputs = () => {
       console.log(JSON.stringify(response, null, 2))
 
       if(response.status == 'complete') {
-          const backend_response = await fetch(`http://127.0.0.1:8000/users/create_user`, {
+          const backend_response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/create_user`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -92,7 +103,8 @@ const validateInputs = () => {
           const data = await backend_response.json();
           console.log("Successfully created new User with ID : ", JSON.stringify(data));
           console.log("Signed up successfully")
-          redirect('/login');
+          alert("Signed up successfully!")
+          navigate('/');
       }
   } catch (err) {
       console.error(JSON.stringify(err, null, 2))
