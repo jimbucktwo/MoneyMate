@@ -1,6 +1,6 @@
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, UserProfile, SignOutButton } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import { redirect } from "react-router";
 import type { Route } from "./+types/account";
@@ -16,7 +16,7 @@ export async function loader(context: Route.LoaderArgs) {
   try {
     // Fetch assigned user
     const response = await fetch(
-      `${process.env.VITE_PUBLIC_BACKEND_URL}users/get_user/${userId}`,
+      `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -47,7 +47,6 @@ export function HydrateFallback() {
 export default function Account({ loaderData }: Route.ComponentProps) {
   const { isSignedIn, user, isLoaded } = useUser();
   const [budgets, setBudgets] = useState(loaderData ? loaderData.budgets : []);
-  console.log(loaderData);
 
   if (!isSignedIn) {
     redirect("/landing");
@@ -57,40 +56,17 @@ export default function Account({ loaderData }: Route.ComponentProps) {
     <main className="flex items-center justify-center size-full">
       <div className="flex flex-col items-center space-y-4 size-full h-screen justify-between">
         <Header />
-        <div className="flex flex-col text-lg text-center justify-start w-4xl border-1 border-gray-200 p-4 rounded-2xl shadow-lg bg-white space-y-4">
-          <h2 className="text-3xl font-bold text-center">Your Budgets</h2>
-          <table>
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-4 py-2">Category</th>
-                <th className="border border-gray-300 px-4 py-2">Spent</th>
-                <th className="border border-gray-300 px-4 py-2">Limit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {budgets.map((budget: any, index: number) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 px-4 py-2">
-                    {budget.category}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    ${budget.amount}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    ${budget.limit}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          
-          
-          <div>
-            <button className="w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">
-              <a href="/budget">Add Budget</a>
-            </button>
+          <div className="p-6 flex flex-row items-start space-y-4 size-full h-screen justify-between bg-white shadow-lg">
+            <div className="flex flex-col items-start space-y-4 w-1/7 h-full border-r-2 border-gray-200 pr-4">
+              <h1 className="text-3xl font-bold text-left">Account Information</h1>
+              <button>Profile</button>
+              <button>History</button>
+              <button>Settings</button>
+              <SignOutButton>Logout</SignOutButton>
+              
+            </div>
+            <div className="flex flex-col items-center space-y-4 w-6/7 h-full"></div>
           </div>
-        </div>
         <Footer />
       </div>
     </main>
