@@ -14,6 +14,7 @@ export function meta({}: Route.MetaArgs) {
 
 export async function loader( context : Route.LoaderArgs) {
   const {userId} = await getAuth(context);
+  
   if (!userId) {
     return redirect('/landing');
   }

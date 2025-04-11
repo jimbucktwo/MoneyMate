@@ -16,13 +16,7 @@ export default function Header() {
               <a className=" mx-5 hover:text-white hover:bg-gray-200 px-4 py-2 rounded-full transition duration-200" href="/budget">Budgets</a>
             </li>
             <li>
-              <SignedIn>
-                <SignOutButton>
-                  <a className="mx-5 hover:text-white hover:bg-gray-200 px-4 py-2 rounded-full transition duration-200" href="/login">Sign out</a>
-                </SignOutButton>
-              </SignedIn>
               <SignedOut><a className="mx-5 hover:text-white hover:bg-gray-200 px-4 py-2 rounded-full transition duration-200" href="/login">Sign in</a></SignedOut>
-              
             </li>
             <li>
               <SignedOut><a  className="mx-5 hover:text-white hover:bg-gray-200 px-4 py-2 rounded-full transition duration-200" href="/register">Register</a></SignedOut>
