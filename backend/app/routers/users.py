@@ -60,3 +60,23 @@ def update_user_by_id(user_id: str, budget: Budget):
     except PyMongoError as e:
         raise HTTPException(status_code=500, detail="Database update failed")
     
+
+@router.put("/update_username/{user_id}")
+def update_user_by_id(user_id: str, username: str):
+    try:
+        result = userCollection.find_one({"_id": user_id})
+        if result:
+            updated_item = userCollection.update_one(
+                {"_id": user_id},
+                {"$set": {"username": username}}
+            )
+            if updated_item.modified_count == 1:
+                return {"message": "Item updated successfully!"}
+            else:
+                raise HTTPException(status_code=400, detail="Failed to update item")
+        else:
+            # Item not found
+            raise HTTPException(status_code=404, detail="Item not found")
+    except PyMongoError as e:
+        raise HTTPException(status_code=500, detail="Database update failed")
+    

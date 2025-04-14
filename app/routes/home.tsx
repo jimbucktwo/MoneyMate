@@ -3,7 +3,6 @@ import { Welcome } from "../welcome/welcome";
 import {getAuth} from '@clerk/react-router/ssr.server';
 import { createClerkClient } from "@clerk/react-router/api.server";
 import { redirect } from "react-router";
-import {useUser} from "@clerk/clerk-react";
 
 export function meta({}: Route.MetaArgs) {
   return [

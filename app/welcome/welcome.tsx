@@ -26,7 +26,7 @@ export async function Welcome({user} : {user: string}) {
             
             className="bg-gray-800 text-white font-bold py-2 px-4 rounded hover:bg-gray-500 transition duration-200"
           >
-            <a href="/account">
+            <a href="/budget">
             View Budgets
             </a>
           </button>

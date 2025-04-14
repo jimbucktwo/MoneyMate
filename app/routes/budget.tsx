@@ -127,7 +127,7 @@ export default function Budget({loaderData}: Route.ComponentProps) {
           
           
           <div>
-            <button onClick={() => setAddBudget(true)}className="w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">
+            <button onClick={() => setAddBudget(true)}className="hover:cursor-pointer w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">
               Add Budget
             </button>
           </div>
@@ -148,7 +148,7 @@ export default function Budget({loaderData}: Route.ComponentProps) {
               </select>
             <input type="number" name="amount" placeholder="Budget Amount" className="border-2 border-gray-300 p-2 rounded-lg" required/>
             <input type="number" name="limit" placeholder="Budget Limit" className="border-2 border-gray-300 p-2 rounded-lg" required/>
-            <button type="submit" className="w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">Add Budget</button>
+            <button type="submit" className="hover:cursor-pointer w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">Add Budget</button>
           </form>
         </div>}
         <Footer/>
