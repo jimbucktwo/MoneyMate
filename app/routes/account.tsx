@@ -220,7 +220,7 @@ useEffect(() => {
                   </div>
                   <button
                     type="submit"
-                    className="hover:cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                    className="hover:cursor-pointer bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200"
                   >
                     Save Username
                   </button>
@@ -270,7 +270,7 @@ useEffect(() => {
                   </div>
                   <button
                     type="submit"
-                    className="hover:cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                    className="hover:cursor-pointer bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200"
                   >
                     Update Password
                   </button>
@@ -296,7 +296,7 @@ useEffect(() => {
                   </div>
                   <button
                     type="submit"
-                    className="hover:cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                    className="hover:cursor-pointer bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200"
                   >
                     Upload Picture
                   </button>
