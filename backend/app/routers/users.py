@@ -15,10 +15,13 @@ def get_user_by_id(user_id: str):
     try:
         result = userCollection.find_one({"_id": user_id})
         if result:
+            result.setdefault("budgets", [])  # ✅ avoid crash on missing
             return result
         else:
             raise HTTPException(status_code=404, detail="Item not found")
     except PyMongoError as e:
+        print(f"Database Error: {e}")  # ✅ Log the real error
+
         raise HTTPException(status_code=500, detail="Database query failed")
 
 @router.post("/create_user", response_model=str, status_code=201)

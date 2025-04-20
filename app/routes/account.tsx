@@ -15,13 +15,22 @@ export async function loader(context: Route.LoaderArgs) {
 
   try {
     // Fetch assigned user
-    const response = await fetch(
-      `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    // const response = await fetch(
+    //   `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
+    //   {
+    //     method: "GET",
+    //     headers: { "Content-Type": "application/json" },
+    //   }
+    // );
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const response = await fetch(
+  `${baseURL}/users/get_user/${userId}`,
+  {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  }
+);
+
 
     // Throw an error if the response is not successful
     if (!response.ok) {
@@ -76,8 +85,11 @@ useEffect(() => {
   const handleUsernameChange = async (event: any) => {
     event.preventDefault();
     const userId = user?.id;
-    const response = await fetch(
-      `${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_username/${userId}?username=${username}`,
+    // const response = await fetch(
+    //   `${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_username/${userId}?username=${username}`,
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const response = await fetch(
+  `${baseURL}/users/update_username/${userId}?username=${username}`,
       {
         method: "PUT",
         headers: {

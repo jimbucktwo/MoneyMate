@@ -16,9 +16,10 @@ export async function loader(context: Route.LoaderArgs) {
 
   try {
     // Fetch assigned user
-    const response = await fetch(
-      `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
-      {
+    // const response = await fetch(
+    //   `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const response = await fetch(`${baseURL}/users/get_user/${userId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
@@ -49,7 +50,8 @@ export function HydrateFallback() {
 
 export default function Budget({loaderData}: Route.ComponentProps) {
   const { isSignedIn, user, isLoaded } = useUser();
-  const [budgets, setBudgets] = useState(loaderData ? loaderData.budgets : []);
+  //const [budgets, setBudgets] = useState(loaderData ? loaderData.budgets : []);
+  const [budgets, setBudgets] = useState<any[]>((loaderData as any)?.budgets || []);
   const [addBudget, setAddBudget] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [budgetId, setBudgetId] = useState(0);
@@ -81,7 +83,8 @@ export default function Budget({loaderData}: Route.ComponentProps) {
 
   try {
     // update budget
-    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_user/${loaderData._id}`, {
+  //  const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_user/${loaderData._id}`, {
+  const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_user/${(loaderData as any)._id}`, {
       method: 'PUT',
       body: JSON.stringify(formattedData),
       headers: { 'Content-Type': 'application/json' },
@@ -121,11 +124,20 @@ export default function Budget({loaderData}: Route.ComponentProps) {
 
   try {
     // update budget
-    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_budget/${loaderData._id}/${budgetId}`, {
-      method: 'PUT',
-      body: JSON.stringify(formattedData),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    // const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_budget/${loaderData._id}/${budgetId}`, {
+    //   method: 'PUT',
+    //   body: JSON.stringify(formattedData),
+    //   headers: { 'Content-Type': 'application/json' },
+    // });
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const response = await fetch(
+  `${baseURL}/users/update_budget/${(loaderData as any)._id}/${budgetId}`,
+  {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formattedData),
+  }
+);
         
     // Throw an error if the response is not successful
     if (!response.ok) {
@@ -194,7 +206,8 @@ export default function Budget({loaderData}: Route.ComponentProps) {
               </tr>
             </thead>
             <tbody>
-              {budgets.map((budget: any, index: number) => (
+            {(budgets ?? []).map((budget: any, index: number) => (
+              //{budgets.map((budget: any, index: number) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="border border-gray-300 px-4 py-2">
                     {budget.category}

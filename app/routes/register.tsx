@@ -87,7 +87,9 @@ const validateInputs = () => {
       console.log(JSON.stringify(response, null, 2))
 
       if(response.status == 'complete') {
-          const backend_response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/create_user`, {
+          //const backend_response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/create_user`, {
+          const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const backend_response = await fetch(`${baseURL}/users/create_user`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
