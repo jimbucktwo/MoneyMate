@@ -132,22 +132,48 @@ const response = await fetch(
     
   }
 
+  // const clerkPictureChange = async () => {
+  //   await user?.setProfileImage({
+  //     file: profilePicture,
+  //   }) }
   const clerkPictureChange = async () => {
-    await user?.setProfileImage({
-      file: profilePicture,
-    }) }
+  try {
+    await user?.setProfileImage({ file: profilePicture });
+  } catch (error) {
+    throw error; // Let the parent function catch and handle this
+  }
+};
 
+
+  // const handleProfilePictureChange = async (event: any) => {
+  //   event.preventDefault();
+  //   if (!profilePicture) {
+  //     alert("Please select a profile picture to upload.");
+  //     return;
+  //   }
+  //   clerkPictureChange();
+  //   alert("Profile picture updated successfully!");
+  //   setProfilePicture(null);
+  //   window.location.reload();
+  // }
   const handleProfilePictureChange = async (event: any) => {
-    event.preventDefault();
-    if (!profilePicture) {
-      alert("Please select a profile picture to upload.");
-      return;
-    }
-    clerkPictureChange();
+  event.preventDefault();
+  if (!profilePicture) {
+    alert("Please select a profile picture to upload.");
+    return;
+  }
+
+  try {
+    await clerkPictureChange(); // ✅ wait for upload to finish
     alert("Profile picture updated successfully!");
     setProfilePicture(null);
-    window.location.reload();
+    window.location.reload(); // ⛔️ now happens *after* upload is done
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    alert("There was an issue uploading your profile picture. Please try again.");
   }
+};
+
 
   const triggerSettings = () => {
     setProfile(false);
