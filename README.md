@@ -1,16 +1,6 @@
-# Welcome to React Router!
+# Welcome to MoneyMate!
 
-A modern, production-ready template for building full-stack React applications using React Router.
-
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+A personal budgeting website designed for users to help track their finances across platforms.
 
 ## Getting Started
 
