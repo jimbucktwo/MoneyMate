@@ -48,7 +48,7 @@ def update_user_by_id(user_id: str, budget: Budget):
             budget_dict = budget.model_dump(by_alias=True)
             updated_item = userCollection.update_one(
                 {"_id": user_id},
-                {"$addToSet": {"budgets": {"id": budget_dict["id"], "category": budget_dict["category"], "amount": budget_dict["amount"], "limit": budget_dict["limit"]}}}
+                {"$addToSet": {"budgets": {"id": budget_dict["id"], "category": budget_dict["category"], "amount": budget_dict["amount"], "limit": budget_dict["limit"], 'length': budget_dict['length'], 'recurring': budget_dict['recurring']}}}
             )
             if updated_item.modified_count == 1:
                 return {"message": "Item updated successfully!"}
@@ -79,4 +79,35 @@ def update_user_by_id(user_id: str, username: str):
             raise HTTPException(status_code=404, detail="Item not found")
     except PyMongoError as e:
         raise HTTPException(status_code=500, detail="Database update failed")
+    
+
+@router.put("/update_budget/{user_id}/{budget_id}")
+def update_budget_by_id(user_id: str, budget: Budget, budget_id: int):
+    try:
+        result = userCollection.find_one({"_id": user_id})
+        if result:
+            budget_dict = budget.model_dump(by_alias=True)
+            
+            updated_item = userCollection.update_one(
+                {"_id": user_id, "budgets.id" : budget_id},
+                {
+                "$set": {
+                    "budgets.$.category": budget_dict["category"],
+                    "budgets.$.amount": budget_dict["amount"],
+                    "budgets.$.limit": budget_dict["limit"],
+                    "budgets.$.length": budget_dict["length"],
+                    "budgets.$.recurring": budget_dict["recurring"],
+                }
+            }
+            )
+            if updated_item.modified_count == 1:
+                return {"message": "Item updated successfully!"}
+            else:
+                raise HTTPException(status_code=400, detail="Failed to update item")
+        else:
+            # Item not found
+            raise HTTPException(status_code=404, detail="Item not found")
+    except PyMongoError as e:
+        raise HTTPException(status_code=500, detail="Database update failed")
+    
     

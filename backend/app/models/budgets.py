@@ -3,7 +3,9 @@ from bson import ObjectId
 
 
 class Budget(BaseModel):
-    id: str
+    id: int
     category: str
     amount: float
     limit: float
+    length: int
+    recurring: bool

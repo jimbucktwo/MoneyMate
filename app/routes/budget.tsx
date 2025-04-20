@@ -5,6 +5,7 @@ import type {Route} from "./+types/account";
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { redirect } from "react-router";
 import {useState} from "react";
+import editing from "../images/editing.png";
 
 export async function loader(context: Route.LoaderArgs) {
   let data = {};
@@ -50,8 +51,16 @@ export default function Budget({loaderData}: Route.ComponentProps) {
   const { isSignedIn, user, isLoaded } = useUser();
   const [budgets, setBudgets] = useState(loaderData ? loaderData.budgets : []);
   const [addBudget, setAddBudget] = useState(false);
-  console.log(loaderData);
-  
+  const [isEditing, setIsEditing] = useState(false);
+  const [budgetId, setBudgetId] = useState(0);
+  const [currentCategory, setCurrentCategory] = useState("");
+  const [currentAmount, setCurrentAmount] = useState(0);
+  const [currentLimit, setCurrentLimit] = useState(0);
+  const [currentLength, setCurrentLength] = useState(0);
+  const [currentRecurring, setCurrentRecurring] = useState(false);
+  const [editingButtons, setEditingButtons] = useState(false);
+  console.log("loaderData:", loaderData);
+
   if (!isSignedIn) {
       redirect("/landing");
   }
@@ -61,10 +70,12 @@ export default function Budget({loaderData}: Route.ComponentProps) {
   const formData = new FormData(event.target);
   const data = Object.fromEntries(formData);
   const formattedData = {
-    id: loaderData._id,
+    id: budgets.length + 1,
     category: data.category.toString().charAt(0).toUpperCase() + data.category.toString().slice(1),
     amount: data.amount,
     limit: data.limit,
+    length: data.length,
+    recurring: data.recurring === "on" ? true : false,
   }
   
 
@@ -81,31 +92,105 @@ export default function Budget({loaderData}: Route.ComponentProps) {
       throw new Error(`Failed to update assigned budgets. Status: ${response.status}`);
     }
 
-    // Parse the response as JSON
-    console.log("Fetched data:", data);
+    alert("Budget added successfully!");
+  setAddBudget(false);
+  event.target.reset();
+  window.location.reload();
     
   } catch (err) {
     console.error("Error updating assigned budgets:", err);
   };
 
-  alert("Budget added successfully!");
-  setAddBudget(false);
-  event.target.reset();
-  window.location.reload();
+  
   }
 
+  
+  const handleEdit = async (event: any) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    const formattedData = {
+    id: budgetId,
+    category: currentCategory,
+    amount: data.amount,
+    limit: data.limit,
+    length: data.length,
+    recurring: data.recurring === "on" ? true : false,
+  }
+  
+
+  try {
+    // update budget
+    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_budget/${loaderData._id}/${budgetId}`, {
+      method: 'PUT',
+      body: JSON.stringify(formattedData),
+      headers: { 'Content-Type': 'application/json' },
+    });
+        
+    // Throw an error if the response is not successful
+    if (!response.ok) {
+      throw new Error(`Failed to update current budget. Status: ${response.status}`);
+    }
+  alert("Budget updated successfully!");
+  setIsEditing(false);
+  event.target.reset();
+  window.location.reload();
+    
+  } catch (err) {
+    console.error("Error updating assigned budgets:", err);
+  };
+
+  
+  }
+
+  const triggerAddScreen = () => {
+    setAddBudget(true);
+    setIsEditing(false);
+    setEditingButtons(false);
+  }
+  
+  const triggerEditScreen = () => {
+    setAddBudget(false);
+    setEditingButtons(true);
+    setIsEditing(false);
+  }
+
+  const triggerBudgetScreen = () => {
+    setAddBudget(false);
+    setIsEditing(false);
+    setEditingButtons(false);
+  }
+  
     return (
         <main className="flex items-center justify-center size-full">
       <div className="flex flex-col items-center space-y-4 size-full h-screen justify-between">
         <Header/>
-        {!addBudget && <div className="flex flex-col text-lg text-center justify-start w-4xl border-1 border-gray-200 p-4 rounded-2xl shadow-lg bg-white space-y-4">
+        <div className="flex flex-row text-lg text-center justify-center items-center h-full w-full border-1 border-gray-200 p-4 shadow-lg bg-white space-y-4 px-12">
+        <div className="pl-4 flex flex-col h-full items-start border-r-2 border-gray-200 pt-12 pr-4 w-1/6 space-y-4">
           <h2 className="text-3xl font-bold text-center">Your Budgets</h2>
+          <button onClick={triggerAddScreen} className="p-2 px-4 hover:bg-gray-300 hover:text-white hover:cursor-pointer rounded-full transition duration-200">
+              Add
+          </button>
+          {!editingButtons &&
+          <button onClick={triggerEditScreen} className="p-2 px-4 hover:bg-gray-300 hover:text-white hover:cursor-pointer rounded-full transition duration-200">
+              Edit
+          </button>}
+          {editingButtons &&
+          <button onClick={triggerBudgetScreen} className="p-2 px-4 hover:bg-gray-300 hover:text-white hover:cursor-pointer rounded-full transition duration-200">
+              <p className="text-red-600">Done Editing?</p>
+          </button>}
+        </div>
+        {!addBudget && !isEditing && 
+        <div className="flex flex-col text-lg text-center justify-start w-full border-gray-200 p-4 bg-white space-y-4 px-12">
           <table>
             <thead>
               <tr className="bg-gray-100">
                 <th className="border border-gray-300 px-4 py-2">Category</th>
                 <th className="border border-gray-300 px-4 py-2">Spent</th>
                 <th className="border border-gray-300 px-4 py-2">Limit</th>
+                <th className="border border-gray-300 px-4 py-2">Time Left</th>
+                <th className="border border-gray-300 px-4 py-2">Recurring?</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -120,20 +205,63 @@ export default function Budget({loaderData}: Route.ComponentProps) {
                   <td className="border border-gray-300 px-4 py-2">
                     ${budget.limit}
                   </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {budget.length} days
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {budget.recurring ? "Yes" : "No"}
+                  </td>
+                  {editingButtons &&
+                  <td>
+                    <button className="hover:cursor-pointer" onClick={() => {setIsEditing(true);
+                      setBudgetId(budget.id);
+                      setCurrentCategory(budget.category);
+                      setCurrentAmount(budget.amount);
+                      setCurrentLimit(budget.limit);
+                      setCurrentLength(budget.length);
+                      setCurrentRecurring(budget.recurring);}}>
+                      <img src={editing} alt="Edit" className="w-12 h-8"/>
+                    </button>
+                  </td>}
                 </tr>
               ))}
             </tbody>
           </table>
+            
           
-          
-          <div>
-            <button onClick={() => setAddBudget(true)}className="hover:cursor-pointer w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">
-              Add Budget
-            </button>
-          </div>
         </div>}
         
-        {addBudget &&<div className="flex flex-col text-lg text-center justify-start w-sm border-1 border-gray-200 p-16 rounded-2xl shadow-lg bg-white space-y-4">
+
+        {isEditing &&
+           <div className="w-5/6 flex flex-col text-lg text-center justify-start bg-white space-y-4 h-full">
+           <button onClick={triggerEditScreen} className="mt-4 mb-30 hover:cursor-pointer text-red-600 rounded hover:bg-gray-300 transition duration-200 w-20 pl-0">{'<'} Back</button>
+           <h1 className="text-4xl font-bold text-center">Edit Budget</h1>
+           <form onSubmit={(event) => (handleEdit(event))} className="w-full flex flex-col items-start space-y-4 mt-4">
+            <div className="flex flex-row items-center justify-center w-full">
+              <p className="mr-4">Amount: </p>
+             <input type="number" name="amount" value={currentAmount} onChange={(e) => setCurrentAmount(parseInt(e.target.value, 10))} placeholder="Budget Amount" className="w-20 border-2 border-gray-300 p-2 rounded-lg" required/>
+             </div>
+             <div className="flex flex-row items-center justify-center w-full">
+              <p className="mr-4">Limit: </p>
+             <input type="number" name="limit" value={currentLimit} onChange={(e) => setCurrentLimit(parseInt(e.target.value, 10))} placeholder="Budget Limit" className="w-20 border-2 border-gray-300 p-2 rounded-lg" required/>
+             </div>
+             <div className="flex flex-row items-center justify-center w-full">
+              <p className="mr-4">Duration (in days): </p>
+             <input type="number" name="length" value={currentLength} onChange={(e) => setCurrentLength(parseInt(e.target.value, 10))} placeholder="Budget Duration (in days)" className="w-20 border-2 border-gray-300 p-2 rounded-lg" required/>
+              </div>
+            <div className="flex flex-row items-center justify-center w-full">
+              <p className="mr-4">Recurring?</p>
+            <input type="checkbox" name="recurring" placeholder="Recurring?" className="border-2 border-gray-300 p-2 rounded-lg" required/>
+            </div>
+            <div className="w-full">
+             <button type="submit" className="hover:cursor-pointer w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">Confirm?</button>
+           </div>
+           </form>
+         </div>
+          }
+        
+        {addBudget && <div className="h-full w-5/6 flex flex-col text-lg items-center justify-start pl-12  border-gray-200 bg-white space-y-4">
+          <button onClick={triggerBudgetScreen} className="mb-30 mt-4 flex self-start hover:cursor-pointer text-red-600 rounded hover:bg-gray-300 transition duration-200 w-20 pl-0">{'<'} Back</button>
           <h1 className="text-4xl font-bold text-center">Add Budget</h1>
           <form onSubmit={(event) => (handleSubmit(event))} className="flex flex-col items-center space-y-4 mt-4">
             <select name="category" className="border-2 border-gray-300 p-2 rounded-lg" required>
@@ -148,9 +276,15 @@ export default function Budget({loaderData}: Route.ComponentProps) {
               </select>
             <input type="number" name="amount" placeholder="Budget Amount" className="border-2 border-gray-300 p-2 rounded-lg" required/>
             <input type="number" name="limit" placeholder="Budget Limit" className="border-2 border-gray-300 p-2 rounded-lg" required/>
+            <input type="number" name="length" placeholder="Budget Duration (in days)" className="border-2 border-gray-300 p-2 rounded-lg" required/>
+            <div className="flex flex-row">
+              <p className="mr-4">Recurring?</p>
+            <input type="checkbox" name="recurring" placeholder="Recurring?" className="border-2 border-gray-300 p-2 rounded-lg" required/>
+            </div>
             <button type="submit" className="hover:cursor-pointer w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">Add Budget</button>
           </form>
         </div>}
+        </div>
         <Footer/>
         </div>
       </main>
