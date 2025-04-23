@@ -12,16 +12,7 @@ export async function loader(context: Route.LoaderArgs) {
   if (!userId) {
     return redirect("/landing");
   }
-
   try {
-    // Fetch assigned user
-    // const response = await fetch(
-    //   `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
-    //   {
-    //     method: "GET",
-    //     headers: { "Content-Type": "application/json" },
-    //   }
-    // );
     const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
 const response = await fetch(
   `${baseURL}/users/get_user/${userId}`,
@@ -30,15 +21,12 @@ const response = await fetch(
     headers: { "Content-Type": "application/json" },
   }
 );
-
-
     // Throw an error if the response is not successful
     if (!response.ok) {
       throw new Error(
         `Failed to fetch assigned budgets. Status: ${response.status}`
       );
     }
-
     // Parse the response as JSON
     data = await response.json();
     console.log("Fetched data:", data);
@@ -47,12 +35,10 @@ const response = await fetch(
   }
   return data;
 }
-
 // HydrateFallback is rendered while the client loader is running
 export function HydrateFallback() {
   return <div>Loading...</div>;
 }
-
 export default function Account({ loaderData }: Route.ComponentProps) {
   const { isSignedIn, user, isLoaded } = useUser();
   const [profile, setProfile] = useState(true);
@@ -62,9 +48,9 @@ const [email, setEmail] = useState('');
 const [currentPassword, setCurrentPassword] = useState('');
 const [newPassword, setNewPassword] = useState('');
 const [confirmPassword, setConfirmPassword] = useState('');
-const [profilePicture, setProfilePicture] = useState(null);
+const [profilePicture, setProfilePicture] = useState<File | null>(null);
+// const [profilePicture, setProfilePicture] = useState(null);
 const [error, setError] = useState("");
-
 useEffect(() => {
   if (confirmPassword && confirmPassword !== newPassword) {
       setError("Passwords don't match" );
@@ -76,7 +62,7 @@ useEffect(() => {
   if (!isSignedIn) {
     redirect("/landing");
   }
-  
+
   const updateUsernameClerk = async () => {
         await user?.update({
           username: username,})
@@ -85,8 +71,6 @@ useEffect(() => {
   const handleUsernameChange = async (event: any) => {
     event.preventDefault();
     const userId = user?.id;
-    // const response = await fetch(
-    //   `${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_username/${userId}?username=${username}`,
     const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
 const response = await fetch(
   `${baseURL}/users/update_username/${userId}?username=${username}`,
@@ -107,7 +91,6 @@ const response = await fetch(
       console.error("Error updating username:", response.statusText);
     }
   }
-
   const handlePasswordChange = async (event: any) => {
     event.preventDefault();
     if (newPassword !== confirmPassword) {
@@ -127,11 +110,9 @@ const response = await fetch(
       setError("");
     } catch (error) {
         alert("Current password is incorrect!");
-        
-      }
-    
-  }
 
+      }
+  }
   // const clerkPictureChange = async () => {
   //   await user?.setProfileImage({
   //     file: profilePicture,
@@ -321,20 +302,29 @@ const response = await fetch(
                 <form className="space-y-4" onSubmit={handleProfilePictureChange}>
                   <div className="flex items-center space-x-4">
                     <img
-                      src={user?.imageUrl}
-                      alt="Current Profile"
-                      className="w-20 h-20 rounded-full border border-gray-300"
+                        src={user?.imageUrl}
+                        alt="Current Profile"
+                        className="w-20 h-20 rounded-full border border-gray-300"
                     />
+                    {/*<input*/}
+                    {/*  type="file"*/}
+                    {/*  accept="image/*"*/}
+                    {/*  onChange={(e) => setProfilePicture(e.target.files?.[0] || null)}*/}
+                    {/*  className="block w-1/8 text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer"*/}
+                    {/*/>*/}
                     <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setProfilePicture(e.target.files?.[0] || null)}
-                      className="block w-1/8 text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setProfilePicture(e.target.files?.[0] || null)
+                        }
+                        className="block w-1/8 text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer"
                     />
+
                   </div>
                   <button
-                    type="submit"
-                    className="hover:cursor-pointer bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200"
+                      type="submit"
+                      className="hover:cursor-pointer bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200"
                   >
                     Upload Picture
                   </button>
