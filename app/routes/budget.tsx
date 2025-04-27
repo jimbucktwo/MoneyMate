@@ -227,7 +227,7 @@ export default function Budget({loaderData}: Route.ComponentProps) {
                     {budget.recurring ? "Yes" : "No"}
                   </td>
                   {editingButtons &&
-                      <td>
+                      <td className="flex flex-row items-center justify-around">
                         <td>
                           <button
                               className="hover:cursor-pointer text-red-600"
@@ -235,7 +235,7 @@ export default function Budget({loaderData}: Route.ComponentProps) {
                           >
                             Delete
                           </button>
-                        </td>D
+                        </td>
                         <button className="hover:cursor-pointer" onClick={() => {
                           setIsEditing(true);
                           setBudgetId(budget.id);
@@ -299,7 +299,7 @@ export default function Budget({loaderData}: Route.ComponentProps) {
             <input type="number" name="length" placeholder="Budget Duration (in days)" className="border-2 border-gray-300 p-2 rounded-lg" required/>
             <div className="flex flex-row">
               <p className="mr-4">Recurring?</p>
-            <input type="checkbox" name="recurring" placeholder="Recurring?" className="border-2 border-gray-300 p-2 rounded-lg" required/>
+            <input type="checkbox" name="recurring" placeholder="Recurring?" className="border-2 border-gray-300 p-2 rounded-lg"/>
             </div>
             <button type="submit" className="hover:cursor-pointer w-40 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-300 transition duration-200">Add Budget</button>
           </form>
