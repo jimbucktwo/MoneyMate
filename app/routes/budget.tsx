@@ -16,9 +16,10 @@ export async function loader(context: Route.LoaderArgs) {
 
   try {
     // Fetch assigned user
-    const response = await fetch(
-      `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
-      {
+    // const response = await fetch(
+    //   `${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${userId}`,
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const response = await fetch(`${baseURL}/users/get_user/${userId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
@@ -49,7 +50,8 @@ export function HydrateFallback() {
 
 export default function Budget({loaderData}: Route.ComponentProps) {
   const { isSignedIn, user, isLoaded } = useUser();
-  const [budgets, setBudgets] = useState(loaderData ? loaderData.budgets : []);
+  //const [budgets, setBudgets] = useState(loaderData ? loaderData.budgets : []);
+  const [budgets, setBudgets] = useState<any[]>((loaderData as any)?.budgets || []);
   const [addBudget, setAddBudget] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [budgetId, setBudgetId] = useState(0);
@@ -77,34 +79,27 @@ export default function Budget({loaderData}: Route.ComponentProps) {
     length: data.length,
     recurring: data.recurring === "on" ? true : false,
   }
-  
-
   try {
     // update budget
-    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_user/${loaderData._id}`, {
+  //  const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_user/${loaderData._id}`, {
+  const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_user/${(loaderData as any)._id}`, {
       method: 'PUT',
       body: JSON.stringify(formattedData),
       headers: { 'Content-Type': 'application/json' },
     });
-        
     // Throw an error if the response is not successful
     if (!response.ok) {
       throw new Error(`Failed to update assigned budgets. Status: ${response.status}`);
     }
-
     alert("Budget added successfully!");
   setAddBudget(false);
   event.target.reset();
   window.location.reload();
-    
   } catch (err) {
     console.error("Error updating assigned budgets:", err);
   };
-
-  
   }
 
-  
   const handleEdit = async (event: any) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -117,16 +112,16 @@ export default function Budget({loaderData}: Route.ComponentProps) {
     length: data.length,
     recurring: data.recurring === "on" ? true : false,
   }
-  
-
   try {
-    // update budget
-    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/update_budget/${loaderData._id}/${budgetId}`, {
-      method: 'PUT',
-      body: JSON.stringify(formattedData),
-      headers: { 'Content-Type': 'application/json' },
-    });
-        
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+    const response = await fetch(
+  `${baseURL}/users/update_budget/${(loaderData as any)._id}/${budgetId}`,
+  {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formattedData),
+  }
+);
     // Throw an error if the response is not successful
     if (!response.ok) {
       throw new Error(`Failed to update current budget. Status: ${response.status}`);
@@ -139,28 +134,47 @@ export default function Budget({loaderData}: Route.ComponentProps) {
   } catch (err) {
     console.error("Error updating assigned budgets:", err);
   };
-
-  
   }
-
   const triggerAddScreen = () => {
     setAddBudget(true);
     setIsEditing(false);
     setEditingButtons(false);
   }
-  
   const triggerEditScreen = () => {
     setAddBudget(false);
     setEditingButtons(true);
     setIsEditing(false);
   }
+  const handleDelete = async (id: number) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this budget?");
+  if (!confirmDelete) return;
+
+  try {
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+    const response = await fetch(
+      `${baseURL}/users/delete_budget/${(loaderData as any)._id}/${id}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete budget. Status: ${response.status}`);
+    }
+
+    alert("Budget deleted successfully!");
+    window.location.reload();
+  } catch (err) {
+    console.error("Error deleting budget:", err);
+  }
+};
 
   const triggerBudgetScreen = () => {
     setAddBudget(false);
     setIsEditing(false);
     setEditingButtons(false);
   }
-  
     return (
         <main className="flex items-center justify-center size-full">
       <div className="flex flex-col items-center space-y-4 size-full h-screen justify-between">
@@ -194,7 +208,8 @@ export default function Budget({loaderData}: Route.ComponentProps) {
               </tr>
             </thead>
             <tbody>
-              {budgets.map((budget: any, index: number) => (
+            {(budgets ?? []).map((budget: any, index: number) => (
+              //{budgets.map((budget: any, index: number) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="border border-gray-300 px-4 py-2">
                     {budget.category}
@@ -212,28 +227,34 @@ export default function Budget({loaderData}: Route.ComponentProps) {
                     {budget.recurring ? "Yes" : "No"}
                   </td>
                   {editingButtons &&
-                  <td>
-                    <button className="hover:cursor-pointer" onClick={() => {setIsEditing(true);
-                      setBudgetId(budget.id);
-                      setCurrentCategory(budget.category);
-                      setCurrentAmount(budget.amount);
-                      setCurrentLimit(budget.limit);
-                      setCurrentLength(budget.length);
-                      setCurrentRecurring(budget.recurring);}}>
-                      <img src={editing} alt="Edit" className="w-12 h-8"/>
-                    </button>
-                  </td>}
+                      <td>
+                        <td>
+                          <button
+                              className="hover:cursor-pointer text-red-600"
+                              onClick={() => handleDelete(budget.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>D
+                        <button className="hover:cursor-pointer" onClick={() => {
+                          setIsEditing(true);
+                          setBudgetId(budget.id);
+                          setCurrentCategory(budget.category);
+                          setCurrentAmount(budget.amount);
+                          setCurrentLimit(budget.limit);
+                          setCurrentLength(budget.length);
+                          setCurrentRecurring(budget.recurring);
+                        }}>
+                          <img src={editing} alt="Edit" className="w-12 h-8"/>
+                        </button>
+                      </td>}
                 </tr>
-              ))}
+            ))}
             </tbody>
           </table>
-            
-          
         </div>}
-        
-
-        {isEditing &&
-           <div className="w-5/6 flex flex-col text-lg text-center justify-start bg-white space-y-4 h-full">
+          {isEditing &&
+              <div className="w-5/6 flex flex-col text-lg text-center justify-start bg-white space-y-4 h-full">
            <button onClick={triggerEditScreen} className="mt-4 mb-30 hover:cursor-pointer text-red-600 rounded hover:bg-gray-300 transition duration-200 w-20 pl-0">{'<'} Back</button>
            <h1 className="text-4xl font-bold text-center">Edit Budget</h1>
            <form onSubmit={(event) => (handleEdit(event))} className="w-full flex flex-col items-start space-y-4 mt-4">
@@ -259,7 +280,6 @@ export default function Budget({loaderData}: Route.ComponentProps) {
            </form>
          </div>
           }
-        
         {addBudget && <div className="h-full w-5/6 flex flex-col text-lg items-center justify-start pl-12  border-gray-200 bg-white space-y-4">
           <button onClick={triggerBudgetScreen} className="mb-30 mt-4 flex self-start hover:cursor-pointer text-red-600 rounded hover:bg-gray-300 transition duration-200 w-20 pl-0">{'<'} Back</button>
           <h1 className="text-4xl font-bold text-center">Add Budget</h1>

@@ -26,11 +26,15 @@ export async function loader( context : Route.LoaderArgs) {
   let data = user;
   try {
     // Fetch assigned budgets
-    const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${user.id}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-        
+    // const response = await fetch(`${process.env.VITE_PUBLIC_BACKEND_URL}/users/get_user/${user.id}`, {
+    //   method: 'GET',
+    //   headers: { 'Content-Type': 'application/json' },
+    // });
+    const baseURL = process.env.VITE_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const response = await fetch(`${baseURL}/users/get_user/${user.id}`, {
+  method: "GET",
+  headers: { "Content-Type": "application/json" },
+});
     // Throw an error if the response is not successful
     if (!response.ok) {
       throw new Error(`Failed to fetch assigned budgets. Status: ${response.status}`);

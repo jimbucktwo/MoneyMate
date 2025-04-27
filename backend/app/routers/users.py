@@ -1,9 +1,13 @@
 from fastapi import HTTPException, APIRouter
-from app.database import get_database
+# from app.database import get_database
+from ..database import get_database  # ✅ Works with relative structure
 from pymongo.errors import PyMongoError
 from bson import ObjectId
-from app.models.users import User
-from app.models.budgets import Budget
+# from app.models.users import User
+# from app.models.budgets import Budget
+from ..models.users import User
+from ..models.budgets import Budget
+
 
 userCollection = get_database()["users"]
 print(userCollection)
@@ -15,10 +19,13 @@ def get_user_by_id(user_id: str):
     try:
         result = userCollection.find_one({"_id": user_id})
         if result:
+            result.setdefault("budgets", [])  # ✅ avoid crash on missing
             return result
         else:
             raise HTTPException(status_code=404, detail="Item not found")
     except PyMongoError as e:
+        print(f"Database Error: {e}")  # ✅ Log the real error
+
         raise HTTPException(status_code=500, detail="Database query failed")
 
 @router.post("/create_user", response_model=str, status_code=201)
@@ -60,6 +67,35 @@ def update_user_by_id(user_id: str, budget: Budget):
     except PyMongoError as e:
         raise HTTPException(status_code=500, detail="Database update failed")
     
+
+@router.delete("/delete_budget/{user_id}/{budget_id}")
+def delete_budget_by_id(user_id: str, budget_id: int):
+    try:
+        result = userCollection.find_one({"_id": user_id})
+        if not result:
+            print(f"❌ No user found with ID: {user_id}")
+            raise HTTPException(status_code=404, detail="User not found")
+
+        match_id = int(budget_id)
+        print(f"🧾 Deleting budget id={match_id} from user={user_id}")
+        print("Budgets before delete:", result.get("budgets", []))
+
+        updated_item = userCollection.update_one(
+            {"_id": user_id, "budgets.id": match_id},
+            {"$pull": {"budgets": {"id": match_id}}}
+        )
+
+        if updated_item.modified_count == 1:
+            print("✅ Budget was deleted")
+            return {"message": "Budget deleted successfully!"}
+        else:
+            print("⚠️ No matching budget found to delete.")
+            raise HTTPException(status_code=404, detail="Budget not found")
+
+    except PyMongoError as e:
+        print("❌ MongoDB error:", e)
+        raise HTTPException(status_code=500, detail="Database delete failed")
+
 
 @router.put("/update_username/{user_id}")
 def update_user_by_id(user_id: str, username: str):
